@@ -7,6 +7,8 @@ if [ ! $1 ]; then
         exit 1
 fi
 
+# [[ $1 -lt 1 ]] && { echo "Need one or more file" >&2; exit 1; }
+
 # Get the filename at command level to verify
 
 filename="$1"
