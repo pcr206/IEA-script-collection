@@ -1,0 +1,66 @@
+#!/bin/bash 
+
+# create script
+# Author Paresh
+
+#Is tehre an argument
+if [[ ! $1 ]]; then
+	echo "Missing argument" 
+	exit 1
+fi
+ 
+declare open_eidtor=""
+if [[ $# -eq 1 ]]; then
+	open_eidtor="true"
+fi
+
+declare -r bindir="${HOME}/bin"
+
+# Check bin direcotry exists
+if [[ ! -d $bindir ]]; then
+	# if not: create bin directory
+	if mkdir "$bindir"; then
+		echo "created ${bindir}" >&2
+	else
+		echo "Could not create ${bindir}." >&2
+		exit 1
+	fi
+fi
+
+while [[ $1 ]]; do
+	scriptname="$1"
+	filename="${bindir}/${scriptname}"
+
+	if [[ -e $filename ]]; then
+		echo "File ${filename} already exists" >&2
+		shift
+		continue
+	fi
+	
+	if type "$scriptname" > /dev/null 2>&1; then
+		echo "There is already a command with name ${scriptname}" >&2
+		shift
+		continue
+	fi
+
+	#create a script with a single line
+	echo '#!/bin/bash' > "$filename"
+	# Add executable permission
+	chmod u+x "$filename"
+	
+	shift
+done
+
+
+# Open with editor
+if [[ $open_editor ]]; then
+	echo opening
+	if [[ $EDITOR ]]; then
+		$EDITOR "$filename"
+	else
+		echo "Script created; not starting editor because \$EDITOR is not set."
+	fi
+fi
+
+
+
