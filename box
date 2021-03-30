@@ -1,0 +1,34 @@
+#!/bin/bash
+
+usage() {
+	cat <<END
+box [-r] [-b n] [-s n] stop
+
+Print each number up to stop, beginning at 0
+	-b: number to begin with (default: 0)
+	-h: show this help message
+	-r: reverses the count
+	-s: sets step size (default: 1)
+END
+}
+
+
+# A function to draw a line
+
+drawline() {
+	declare line=""
+	declare char="-"
+	for (( i=0; i<$1; ++i )); do
+		line="${line}${char}"
+	done
+	printf "%s\n" "$line"
+}
+
+#no arguments? no output
+[[ ! $1 ]] && exit 0
+
+declare -i len="${#1} + 4"
+drawline len
+printf "| %s |\n" "$1"
+drawline len
+

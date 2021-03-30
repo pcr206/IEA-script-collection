@@ -1,0 +1,5 @@
+#!/bin/bash
+
+echo "inner before : $var"
+var="inner"
+echo "inner after: $var"

@@ -1,0 +1,46 @@
+#!/bin/bash 
+
+# Simple note-taking scirpt
+# Author Paresh
+
+# get the date
+declare -r date=$(date)
+
+# get the topic
+declare -r topic="$1"
+
+# determine where to save notes
+# declare notesdir="${HOME}/bin"
+# [[ $NOTESDIR ]] && notesdir="${NOTESDIR}"
+# The following line replacement of above two line of codes
+declare notesdir=${NOTESDIR:-"${HOME}/bin"}
+
+if [[ ! -d $notesdir ]]; then
+	mkdir -- "${notesdir}" 2> /dev/null || { echo "Cannot make directory ${notesdir}" 1>&2; exit 1; }
+fi
+
+# set -x  --> To start the trace
+# filename to write to
+declare -r filename="${notesdir}/${topic}notes.txt"
+
+# set +x --> To end the trace
+
+# Does file exist? If not, create it
+if [[ ! -f $filename ]]; then
+	touch -- "${filename}" 2> /dev/null || { echo "Cannot make directory ${filename}" 1>&2; exit 1; }
+fi
+
+# IS file writeable?
+[[ -w $filename ]] || { echo "${filename} is not writeable" 1>&2; exit 1; }
+
+# Ask user for input
+read -p "Your note: " note
+
+if [[ $note ]]; then
+	echo "$date: $note" >> "$filename"
+   	echo "Note '$note' saved to $filename" 1>&2
+else
+	echo "No imput: not wasn't save"  1>&2
+	exit 2
+fi
+
