@@ -1,0 +1,6 @@
+INSTRUCTOR = 'JR'
+
+def mymodule():
+    print('Test the code')
+
+print('Time to load!')

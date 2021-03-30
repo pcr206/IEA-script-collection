@@ -1,0 +1,60 @@
+#!/bin/bash
+
+# Git workflow for daily update the repos
+# Author: Paresh Rana
+
+# create and verify the new branch existance
+
+read -p "Branch Name to work on: " branch
+
+existing_branch=`git branch | grep -v master`
+
+if [[ -z ${branch} ]]; then
+	echo "Need branch name to work and update repos!"
+	exit 1
+elif [[ ${branch} == ${existing_branch} ]]; then
+	echo "Branch already exist! Need new name for Branch!"
+	exit 1
+else
+	echo "========> Creating and checkout ${branch} branch! "
+	git checkout -b ${branch}
+fi
+
+# Verify the local repository
+echo "========> Curent Status of local repository:"
+git status
+
+chk_untracked=`git status | grep Untracked | wc -l`
+chk_committed=`git status | grep committed | wc -l`
+
+if [[ ${chk_untracked} -lt 1 ]]; then 
+  	echo "Your branch is upto date and nothing to be added to local and remote repos."
+elif [[ ${chk_committed} -lt 1 ]]; then
+	echo "Your branch is upto date and nothing to be committed."
+else
+	echo "========> Running git add to add files into local repos...."
+	git add .
+	echo "========> Verifying the status of the repos...."
+	git status
+	echo " "
+fi
+
+# Commit the changes into local repository
+
+read -N 10 -p "Add meaningful commit message for future reference: " commit_msg
+
+if [[ -z ${commit_msg} ]]; then
+        echo "========> There is no commit message entered by User, So default message supplied to commit changes!" 
+        git commit -m "Default Commit Message!!" 
+else
+        echo "========> Commit the changes using provided message ${commit_msg}"
+        git commit -m "${commit_msg}"
+fi
+
+# Push your changes from local repository to remote repository
+
+echo "========> Push changes to remote repository"
+git push -u origin ${branch}
+
+exit 0
+
